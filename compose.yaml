@@ -1,0 +1,39 @@
+services:
+  db:
+    image: postgres:17-bookworm@sha256:837bed18782820fe967067cb5328b02b0d9992c1be9a37ee0c9c492cfc03af3b
+    env_file: .local/postgres.env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d game_companion"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+  migrate:
+    build: .
+    env_file: .local/migrate.env
+    command: ["node", "dist/src/migrate.js"]
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: "no"
+  api:
+    build: .
+    init: true
+    env_file: .local/api.env
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: 3000
+    ports:
+      - "127.0.0.1:3000:3000"
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    restart: unless-stopped
+    read_only: true
+    tmpfs: [/tmp]
+    security_opt: [no-new-privileges:true]
+volumes:
+  postgres_data:

@@ -1,0 +1,11 @@
+import {serveStdio} from '@modelcontextprotocol/server/stdio';
+import {Pool} from 'pg';
+import {createHash,timingSafeEqual} from 'node:crypto';
+import {loadConfig} from './config.js';
+import {createMcpServer} from './mcp.js';
+import {createService} from './service.js';
+const config=loadConfig();
+const hash=createHash('sha256').update(process.env.OWNER_KEY??'').digest('hex');
+if(!timingSafeEqual(Buffer.from(hash),Buffer.from(config.ownerKeyHash))) throw new Error('Owner key required');
+const pool=new Pool({connectionString:config.databaseUrl});
+serveStdio(()=>createMcpServer(createService(pool,config.ownerId)));
