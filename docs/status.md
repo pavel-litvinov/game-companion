@@ -22,11 +22,16 @@ Generated owner/database/signing credentials are private and ignored by Git.
   synthetic game/profile/message/event afterward.
 - Public tunnel health and OAuth discovery have been verified over HTTPS.
 - ChatGPT discovered the actual authorization/token/registration/resource URLs.
+- All 25 tests, type checking and build passed in GitHub Actions on Node 22
+  and 24 for implementation commit `62928decdef7ff270156b917f0c514a5b16ed356`.
+  [Successful PR workflow](https://github.com/pavel-litvinov/game-companion/actions/runs/45268612995).
 
 ## Connection status
-The personal plugin setup is in progress in the owner's ChatGPT account. Actual
-installation/consent and an authenticated tool round trip are reported separately;
-a reachable URL or filled form alone is not a completed connection.
+The personal [Game Companion plugin](https://chatgpt.com/plugins/plugin_asdk_app_6b04aa84d1308191aa5545c6d0da421b)
+is installed in the owner's ChatGPT account. Owner login and consent completed;
+the persisted OAuth store contains the ChatGPT client, grant and issued tokens.
+The installed plugin was used in a ChatGPT conversation and reported the actual
+empty game database. No sample game data was seeded for the connection.
 
 ## Limits
 Only explicit full-message level assertions are automatically extracted.
